@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 const HomePage = lazy(() => import("./pages/homepage/homepage.component"));
+const ShopPage = lazy(() => import("./pages/shop/shop.component"));
 
 function App() {
 	return (
@@ -10,6 +11,7 @@ function App() {
 			<Router>
 				<Switch>
 					<Route exact path="/" component={HomePage} />
+          <Route exact path="/shop" component={ShopPage} />
 				</Switch>
 			</Router>
 		</Suspense>
