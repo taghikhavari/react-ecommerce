@@ -1,14 +1,23 @@
 import React from "react";
 import "./menu-item.styles.scss";
+import { useHistory } from "react-router-dom";
 
 interface IProps {
   title: string;
   imageUrl: string;
   size?: string;
+  link: string;
 }
 
-const MenuItem = ({ title, imageUrl, size }: IProps) => (
-	<div className={`menu-item ${size}`} >
+const MenuItem = ({ title, imageUrl, size, link }: IProps) => {
+  const history = useHistory();
+
+  const handleClick = () => {
+    history.push(`/${link}`)
+  }
+
+  return(
+	<div className={`menu-item ${size}`} onClick={handleClick} >
     <div className="background-image" style={{
     backgroundImage: `url(${imageUrl})`
   }}/>
@@ -17,6 +26,6 @@ const MenuItem = ({ title, imageUrl, size }: IProps) => (
 			<span className="subtitle">Shop Now</span>
 		</div>
 	</div>
-);
+)}
 
 export default MenuItem;
