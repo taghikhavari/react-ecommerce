@@ -1,11 +1,17 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+	BrowserRouter as Router,
+	Route,
+	Switch,
+	Redirect,
+} from "react-router-dom";
 import Header from "./components/header/header.component";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 import { IUser } from "./models/user";
 import { connect } from "react-redux";
 import { setCurrentUser } from "./redux/user/user.actions";
+import { rootState } from "./models/redux";
 
 const HomePage = lazy(() => import("./pages/homepage/homepage.component"));
 const ShopPage = lazy(() => import("./pages/shop/shop.component"));
@@ -13,14 +19,16 @@ const SignInPage = lazy(() =>
 	import("./pages/signIn-signUp/signIn-signUp.component")
 );
 
-interface IProps{
-	setCurrentUser: typeof setCurrentUser
+interface IProps {
+	setCurrentUser: typeof setCurrentUser;
+	currentUser: IUser | null;
 }
 
-function App({setCurrentUser} : IProps) {
+function App({ currentUser, setCurrentUser }: IProps) {
 	useEffect(() => {
 		try {
 			const unsubscribe = auth.onAuthStateChanged(async (userAuth) => {
+				console.log('change in user Auth state: ', userAuth);
 				if (userAuth) {
 					const userRef = await createUserProfileDocument(userAuth);
 					userRef?.onSnapshot((snapShot) => {
@@ -46,15 +54,23 @@ function App({setCurrentUser} : IProps) {
 				<Switch>
 					<Route exact path="/" component={HomePage} />
 					<Route exact path="/shop" component={ShopPage} />
-					<Route exact path="/authentication" component={SignInPage} />
+					<Route
+						exact
+						path="/authentication"
+						render={() => (currentUser?.email ? <Redirect to="/" /> : <SignInPage />)}
+					/>
 				</Switch>
 			</Router>
 		</Suspense>
 	);
 }
 
-const mapDispatch = {
-	setCurrentUser
-}
+const mapState = (state: rootState) => ({
+	currentUser: state.user,
+});
 
-export default connect(null, mapDispatch)(App);
+const mapDispatch = {
+	setCurrentUser,
+};
+
+export default connect(mapState, mapDispatch)(App);

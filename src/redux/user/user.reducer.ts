@@ -1,7 +1,8 @@
 import { IUser } from "../../models/user";
+import { UserActionTypes } from "./user.actionTypes";
 
-type state = IUser | {}
-const INITIAL_STATE: state = {};
+type state = IUser | null
+const INITIAL_STATE: state = null;
 
 type actionType = {
   type: string;
@@ -10,9 +11,8 @@ type actionType = {
 
 const userReducer = (state = INITIAL_STATE, action: actionType): state => {
 	switch (action.type) {
-    case 'SET_CURRENT_USER':
+    case UserActionTypes.SET_CURRENT_USER:
       return {
-        ...state,
         ...action.payload,
       }
     default:

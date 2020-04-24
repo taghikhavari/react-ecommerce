@@ -1,6 +1,7 @@
 import { IUser } from "../../models/user";
+import { UserActionTypes } from "./user.actionTypes";
 
 export const setCurrentUser = (user: IUser | null) => ({
-  type: 'SET_CURRENT_USER',
+  type: UserActionTypes.SET_CURRENT_USER,
   payload: user
 })
