@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Header from "./components/header/header.component";
 import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
 import { IUser } from "./models/user";
+import { connect } from "react-redux";
+import { setCurrentUser } from "./redux/user/user.actions";
 
 const HomePage = lazy(() => import("./pages/homepage/homepage.component"));
 const ShopPage = lazy(() => import("./pages/shop/shop.component"));
@@ -11,26 +13,28 @@ const SignInPage = lazy(() =>
 	import("./pages/signIn-signUp/signIn-signUp.component")
 );
 
-function App() {
-	const [currentUser, setCurrentUser] = useState<IUser | null>(null);
+interface IProps{
+	setCurrentUser: typeof setCurrentUser
+}
 
+function App({setCurrentUser} : IProps) {
 	useEffect(() => {
-		try{
-			const unsubscribe = auth.onAuthStateChanged(async userAuth => {
-				if(userAuth){
+		try {
+			const unsubscribe = auth.onAuthStateChanged(async (userAuth) => {
+				if (userAuth) {
 					const userRef = await createUserProfileDocument(userAuth);
-					userRef?.onSnapshot(snapShot => {
+					userRef?.onSnapshot((snapShot) => {
 						setCurrentUser({
 							id: snapShot.id,
-							...snapShot.data() as IUser
-						})
-					})
-				}else{
+							...(snapShot.data() as IUser),
+						});
+					});
+				} else {
 					setCurrentUser(userAuth);
 				}
 			});
 			return unsubscribe;
-		}catch(e){
+		} catch (e) {
 			console.log(e);
 		}
 	}, []);
@@ -38,7 +42,7 @@ function App() {
 	return (
 		<Suspense fallback="<div>Loading...</div>">
 			<Router>
-				<Header currentUser={currentUser} />
+				<Header />
 				<Switch>
 					<Route exact path="/" component={HomePage} />
 					<Route exact path="/shop" component={ShopPage} />
@@ -49,4 +53,8 @@ function App() {
 	);
 }
 
-export default App;
+const mapDispatch = {
+	setCurrentUser
+}
+
+export default connect(null, mapDispatch)(App);
