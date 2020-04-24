@@ -28,7 +28,6 @@ function App({ currentUser, setCurrentUser }: IProps) {
 	useEffect(() => {
 		try {
 			const unsubscribe = auth.onAuthStateChanged(async (userAuth) => {
-				console.log('change in user Auth state: ', userAuth);
 				if (userAuth) {
 					const userRef = await createUserProfileDocument(userAuth);
 					userRef?.onSnapshot((snapShot) => {
