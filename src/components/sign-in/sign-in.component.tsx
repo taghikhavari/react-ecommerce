@@ -3,7 +3,7 @@ import "./sign-in.styles.scss";
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
 
-import { signInWithGoogle } from "../../firebase/firebase.utils";
+import { signInWithGoogle, auth } from "../../firebase/firebase.utils";
 
 interface IState {
 	email: string;
@@ -18,10 +18,17 @@ const initialState = {
 const SignIn = () => {
 	const [state, setState] = useState<IState>(initialState);
 
-	const handleSubmit = (e: React.SyntheticEvent) => {
+	const handleSubmit = async(e: React.SyntheticEvent) => {
 		e.preventDefault();
 
-		setState(initialState);
+		const { email, password } = state;
+		try {
+			await auth.signInWithEmailAndPassword(email, password);
+			setState(initialState);
+		} catch (error) {
+			console.log(error);
+		}
+
 	};
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
