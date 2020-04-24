@@ -2,7 +2,8 @@ import React, { lazy, Suspense, useEffect, useState } from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Header from "./components/header/header.component";
-import { auth } from "./firebase/firebase.utils";
+import { auth, createUserProfileDocument } from "./firebase/firebase.utils";
+import { IUser } from "./models/user";
 
 const HomePage = lazy(() => import("./pages/homepage/homepage.component"));
 const ShopPage = lazy(() => import("./pages/shop/shop.component"));
@@ -11,13 +12,22 @@ const SignInPage = lazy(() =>
 );
 
 function App() {
-	const [currentUser, setCurrentUser] = useState<firebase.User | null>(null);
+	const [currentUser, setCurrentUser] = useState<IUser | null>(null);
 
 	useEffect(() => {
 		try{
-			const unsubscribe = auth.onAuthStateChanged((user) => {
-				setCurrentUser(user);
-				console.log(user);
+			const unsubscribe = auth.onAuthStateChanged(async userAuth => {
+				if(userAuth){
+					const userRef = await createUserProfileDocument(userAuth);
+					userRef?.onSnapshot(snapShot => {
+						setCurrentUser({
+							id: snapShot.id,
+							...snapShot.data() as IUser
+						})
+					})
+				}else{
+					setCurrentUser(userAuth);
+				}
 			});
 			return unsubscribe;
 		}catch(e){
