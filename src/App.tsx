@@ -18,6 +18,7 @@ const ShopPage = lazy(() => import("./pages/shop/shop.component"));
 const SignInPage = lazy(() =>
 	import("./pages/signIn-signUp/signIn-signUp.component")
 );
+const CheckoutPage = lazy(() => import("./pages/checkout/checkout.component"))
 
 interface IProps {
 	setCurrentUser: typeof setCurrentUser;
@@ -58,6 +59,7 @@ function App({ currentUser, setCurrentUser }: IProps) {
 						path="/authentication"
 						render={() => (currentUser?.email ? <Redirect to="/" /> : <SignInPage />)}
 					/>
+					<Route exact path="/checkout" component={CheckoutPage} />
 				</Switch>
 			</Router>
 		</Suspense>
