@@ -4,7 +4,7 @@ import CustomButton from "../custom-button/custom-button.component";
 import { IItem } from "../../models/item";
 import { connect } from "react-redux";
 import { addToCart } from "../../redux/cart/cart.actions";
-import store from "../../redux/store";
+import { store } from "../../redux/store";
 
 interface IProps {
 	addToCart: typeof addToCart;

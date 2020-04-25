@@ -1,53 +1,25 @@
 import React from "react";
 import MenuItem from "../menu-item/menu-item.component";
 import "./directory.styles.scss";
+import { connect } from "react-redux";
+import { rootState } from "../../models/redux";
+import { IDirectory } from "../../models/directory";
+import { selectDirectorySections } from "../../redux/directory/directory.selectors";
 
-const Directory = () => {
-	const [sections, setSections] = React.useState([
-		{
-			title: "hats",
-			imageUrl: "https://i.ibb.co/cvpntL1/hats.png",
-			id: 1,
-			link: "hats",
-		},
-		{
-			title: "jackets",
-			imageUrl: "https://i.ibb.co/px2tCc3/jackets.png",
-      id: 2,
-      link: ''
-		},
-		{
-			title: "sneakers",
-			imageUrl: "https://i.ibb.co/0jqHpnp/sneakers.png",
-      id: 3,
-      link: ''
-		},
-		{
-			title: "womens",
-			imageUrl: "https://i.ibb.co/GCCdy8t/womens.png",
-			size: "large",
-      id: 4,
-      link: ''
-		},
-		{
-			title: "mens",
-			imageUrl: "https://i.ibb.co/R70vBrQ/men.png",
-			size: "large",
-      id: 5,
-      link: ''
-		},
-	]);
+interface IProps {
+	sections: IDirectory[];
+}
 
-	return (
-		<div className="directory-menu">
-			{sections?.map(({id, ...otherProps}) => (
-				<MenuItem
-          key={id}
-          {...otherProps}
-				/>
-			))}
-		</div>
-	);
-};
+const Directory = ({ sections }: IProps) => (
+	<div className="directory-menu">
+		{sections?.map(({ id, ...otherProps }) => (
+			<MenuItem key={id} {...otherProps} />
+		))}
+	</div>
+);
 
-export default Directory;
+const mapState = (state: rootState) => ({
+	sections: selectDirectorySections(state),
+});
+
+export default connect(mapState)(Directory);
