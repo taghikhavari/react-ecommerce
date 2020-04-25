@@ -3,6 +3,7 @@ import "./checkout.styles.scss";
 import { rootState, cartItemType } from "../../models/redux";
 import { selectCartTotal, selectCartItems } from "../../redux/cart/cart.selectors";
 import { connect } from "react-redux";
+import CheckoutItem from "../../components/checkout-item/checkout-item.component";
 
 interface IProps{
   cartItems: cartItemType[],
@@ -19,7 +20,7 @@ const Checkout = (props: IProps) => (
       <div className="checkout-block"><span>Remove</span></div>
     </div>
     {
-      props?.cartItems?.map(item => item.name)
+      props?.cartItems?.map(item => <CheckoutItem key={item.id} item={item} />)
     }
     <div className="tota"><span>TOTAL: ${props?.totalPrice}</span></div>
   </div>
